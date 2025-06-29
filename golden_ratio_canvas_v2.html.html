@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verbum Shrine Capsule Interface</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #e0e0ff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      display: flex;
+      max-width: 1400px;
+      width: 100%;
+      gap: 30px;
+    }
+    
+    .chant-panel {
+      width: 320px;
+      background: rgba(16, 12, 64, 0.7);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid #4a3aff;
+      box-shadow: 0 0 30px rgba(74, 58, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chant-panel h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: #8a7fff;
+      text-shadow: 0 0 10px rgba(138, 127, 255, 0.5);
+    }
+    
+    .chant-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    button {
+      padding: 18px 15px;
+      background: linear-gradient(135deg, #3a2f8a, #2a1f7a);
+      color: #e0e0ff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(74, 58, 255, 0.5);
+      background: linear-gradient(135deg, #4a3faa, #3a2f9a);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .tone-indicator {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .canvas-container {
+      flex: 1;
+      background: rgba(16, 12, 64, 0.7);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid #4a3aff;
+      box-shadow: 0 0 30px rgba(74, 58, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .canvas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .canvas-header h2 {
+      font-size: 1.8rem;
+      color: #8a7fff;
+      text-shadow: 0 0 10px rgba(138, 127, 255, 0.5);
+    }
+    
+    .frequency-display {
+      background: rgba(25, 20, 80, 0.7);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      color: #b9c4ff;
+    }
+    
+    canvas {
+      background: #0a0828;
+      border: 1px solid #5650d0;
+      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      text-align: center;
+      width: 100%;
+      color: #a9b6ff;
+      font-size: 0.9rem;
+    }
+    
+    .active {
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 5px rgba(74, 58, 255, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(74, 58, 255, 0.8), 0 0 30px rgba(100, 200, 255, 0.6); }
+      100% { box-shadow: 0 0 5px rgba(74, 58, 255, 0.5); }
+    }
+    
+    .DO { border-left: 6px solid #ff4d4d; }
+    .RE { border-left: 6px solid #ff9a4d; }
+    .MI { border-left: 6px solid #ffdd4d; }
+    .FA { border-left: 6px solid #4dff4d; }
+    .SOL { border-left: 6px solid #4dd2ff; }
+    .LA { border-left: 6px solid #4d4dff; }
+    .SI { border-left: 6px solid #dd4dff; }
+    .DOp { border-left: 6px solid #ff4d9e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="chant-panel">
+      <h2>Chant Console</h2>
+      <div class="chant-buttons">
+        <button class="DO" onclick="playTone('DO')">
+          <div class="tone-indicator">DO</div>
+          Freeing Fate
+          <div class="ratio">Ratio: 1 (256 Hz)</div>
+        </button>
+        
+        <button class="RE" onclick="playTone('RE')">
+          <div class="tone-indicator">RE</div>
+          Destiny
+          <div class="ratio">Ratio: 5:4 (320 Hz)</div>
+        </button>
+        
+        <button class="MI" onclick="playTone('MI')">
+          <div class="tone-indicator">MI</div>
+          Knowledge
+          <div class="ratio">Ratio: 3:2 (384 Hz)</div>
+        </button>
+        
+        <button class="FA" onclick="playTone('FA')">
+          <div class="tone-indicator">FA</div>
+          Don't Panic
+          <div class="ratio">Ratio: 4:3 (341.33 Hz)</div>
+        </button>
+        
+        <button class="SOL" onclick="playTone('SOL')">
+          <div class="tone-indicator">SOL</div>
+          My Two
+          <div class="ratio">Ratio: 5:3 (426.67 Hz)</div>
+        </button>
+        
+        <button class="LA" onclick="playTone('LA')">
+          <div class="tone-indicator">LA</div>
+          My Exit
+          <div class="ratio">Ratio: 5:2 (640 Hz)</div>
+        </button>
+        
+        <button class="SI" onclick="playTone('SI')">
+          <div class="tone-indicator">SI</div>
+          My Angles
+          <div class="ratio">Ratio: 15:8 (480 Hz)</div>
+        </button>
+        
+        <button class="DOp" onclick="playTone('DOp')">
+          <div class="tone-indicator">DO'</div>
+          My Loop
+          <div class="ratio">Ratio: 2 (512 Hz)</div>
+        </button>
+      </div>
+    </div>
+    
+    <div class="canvas-container">
+      <div class="canvas-header">
+        <h2>Golden Ratio Visualization</h2>
+        <div class="frequency-display" id="currentFrequency">Current: - Hz</div>
+      </div>
+      <canvas id="spiralCanvas"></canvas>
+    </div>
+  </div>
+  
+  <div class="footer">
+    Verbum Capsule Interface | Harmonic Visualization System | Golden Ratio 1:1.618
+  </div>
+
+  <script>
+    // Correct frequency assignments
+    const BASE_FREQ = 256;
+    const capsuleFreqs = {
+      DO:   BASE_FREQ * 1,      // 256.00 Hz
+      RE:   BASE_FREQ * 5 / 4,  // 320.00 Hz
+      MI:   BASE_FREQ * 3 / 2,  // 384.00 Hz
+      FA:   BASE_FREQ * 4 / 3,  // 341.33 Hz
+      SOL:  BASE_FREQ * 5 / 3,  // 426.67 Hz
+      LA:   BASE_FREQ * 5 / 2,  // 640.00 Hz
+      SI:   BASE_FREQ * 15 / 8, // 480.00 Hz
+      DOp:  BASE_FREQ * 2       // 512.00 Hz
+    };
+    
+    // Audio context for playing tones
+    let audioContext = null;
+    
+    function playTone(tone) {
+      const freq = capsuleFreqs[tone];
+      if (!freq) return;
+      
+      // Update UI
+      document.getElementById('currentFrequency').textContent = `Current: ${freq.toFixed(2)} Hz`;
+      
+      // Highlight button
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Create audio context if needed
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      // Create oscillator
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+      
+      // Configure volume envelope
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.02);
+      gainNode.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.5);
+      gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.0);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 1.0);
+      
+      // Visual feedback
+      drawGoldenSpiral(tone);
+    }
+    
+    // Initialize canvas
+    const canvas = document.getElementById('spiralCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    function setupCanvas() {
+      const container = canvas.parentElement;
+      const width = container.clientWidth - 50;
+      const height = width * 1.618; // Golden ratio height
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      drawGoldenSpiral();
+    }
+    
+    // Draw golden ratio visualization
+    function drawGoldenSpiral(activeTone = null) {
+      const width = canvas.width;
+      const height = canvas.height;
+      const centerX = width * 0.4;
+      const centerY = height / 2;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw golden ratio grid
+      ctx.strokeStyle = 'rgba(100, 150, 255, 0.15)';
+      ctx.lineWidth = 1;
+      
+      // Vertical lines (golden ratio)
+      const phi = 1.618;
+      for (let i = 0; i < 8; i++) {
+        const x = width * (1 - 1 / Math.pow(phi, i));
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      
+      // Horizontal lines (osirian ratio)
+      for (let i = 0; i <= 5; i++) {
+        const y = height * (i / 5);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+      
+      // Draw golden spiral
+      ctx.beginPath();
+      ctx.strokeStyle = '#5e9fff';
+      ctx.lineWidth = 2;
+      
+      const a = 0.5;  // Start radius
+      const b = Math.log(phi) / (Math.PI / 2); // Growth factor
+      
+      for (let theta = 0; theta < 8 * Math.PI; theta += 0.01) {
+        const radius = a * Math.exp(b * theta);
+        const x = centerX + radius * Math.cos(theta) * 80;
+        const y = centerY + radius * Math.sin(theta) * 80;
+        
+        if (theta === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+      
+      // Draw breath nodes
+      const tones = Object.keys(capsuleFreqs);
+      const angleStep = (2 * Math.PI) / tones.length;
+      
+      tones.forEach((tone, i) => {
+        const angle = i * angleStep;
+        const radius = a * Math.exp(b * angle) * 80;
+        const nodeX = centerX + radius * Math.cos(angle);
+        const nodeY = centerY + radius * Math.sin(angle);
+        
+        // Node color based on tone
+        const colors = {
+          "DO": '#ff4d4d',
+          "RE": '#ff9a4d',
+          "MI": '#ffdd4d',
+          "FA": '#4dff4d',
+          "SOL": '#4dd2ff',
+          "LA": '#4d4dff',
+          "SI": '#dd4dff',
+          "DOp": '#ff4d9e'
+        };
+        
+        const isActive = tone === activeTone;
+        const size = isActive ? 16 : 10;
+        
+        // Draw node
+        ctx.beginPath();
+        ctx.arc(nodeX, nodeY, size, 0, Math.PI * 2);
+        ctx.fillStyle = isActive ? 'white' : colors[tone];
+        ctx.fill();
+        
+        // Glow effect for active node
+        if (isActive) {
+          ctx.beginPath();
+          ctx.arc(nodeX, nodeY, size + 6, 0, Math.PI * 2);
+          const gradient = ctx.createRadialGradient(
+            nodeX, nodeY, size,
+            nodeX, nodeY, size + 6
+          );
+          gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = gradient;
+          ctx.fill();
+        }
+        
+        // Draw tone label
+        ctx.font = 'bold 16px Arial';
+        ctx.fillStyle = isActive ? 'white' : '#e0e0ff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tone, nodeX, nodeY);
+      });
+    }
+    
+    // Initialize
+    window.addEventListener('load', () => {
+      setupCanvas();
+      window.addEventListener('resize', setupCanvas);
+    });
+  </script>
+</body>
+</html>
