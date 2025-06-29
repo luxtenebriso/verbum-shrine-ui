@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<style>
+  .segment {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
+  }
+
+  .segment.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+
+  <head>
+    
   <meta charset="UTF-8" />
   <title>Verbum Shrine Portal</title>
   <style>
@@ -56,5 +71,17 @@
   <footer>
     Harmonic Shrine System · DO = 256 Hz · Φ-aware interface
   </footer>
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.segment').forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
