@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harmonic Elevation Module</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #e0e0ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      max-width: 800px;
+    }
+    
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(to right, #8a7fff, #5e9fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      color: #a9b6ff;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      max-width: 1400px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    
+    .elevation-section {
+      background: rgba(16, 12, 64, 0.7);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid #4a3aff;
+      box-shadow: 0 0 30px rgba(74, 58, 255, 0.3);
+      min-width: 400px;
+      flex: 1;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #8a7fff;
+    }
+    
+    .section-title i {
+      font-size: 1.8rem;
+    }
+    
+    .visualization-section {
+      background: rgba(16, 12, 64, 0.7);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid #4a3aff;
+      box-shadow: 0 0 30px rgba(74, 58, 255, 0.3);
+      min-width: 500px;
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    canvas {
+      background: #0a0828;
+      border: 1px solid #5650d0;
+      border-radius: 8px;
+      width: 100%;
+    }
+    
+    #elevationCanvas {
+      height: 600px;
+    }
+    
+    #spiralCanvas {
+      height: 500px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .control-group {
+      background: rgba(25, 20, 80, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .control-group h3 {
+      margin-bottom: 12px;
+      color: #8a7fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .slider-container {
+      margin: 12px 0;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #b9c4ff;
+      font-size: 0.9rem;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(to right, #1a1a5e, #3a3a9e);
+      border-radius: 4px;
+      outline: none;
+    }
+    
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: #a9b6ff;
+      font-size: 0.9rem;
+      max-width: 800px;
+    }
+    
+    .glow {
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+      to {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(100, 200, 255, 0.6);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📐 Harmonic Elevation Module</h1>
+    <p class="subtitle">Experience sacred architecture as harmonic proportions. Click segments to hear the harmonic ratios of historical structures like Freiburg Minster.</p>
+  </div>
+  
+  <div class="container">
+    <div class="elevation-section">
+      <div class="section-title">
+        <i>🏛️</i>
+        <h2>Sacred Proportions as Chord</h2>
+      </div>
+      <canvas id="elevationCanvas"></canvas>
+    </div>
+    
+    <div class="visualization-section">
+      <div class="section-title">
+        <i>🌀</i>
+        <h2>Harmonic Visualization</h2>
+      </div>
+      <canvas id="spiralCanvas"></canvas>
+      
+      <div class="controls">
+        <div class="control-group">
+          <h3><i>🎚️</i> Visualization Controls</h3>
+          <div class="slider-container">
+            <label for="spiralSpeed">Spiral Rotation Speed</label>
+            <input type="range" id="spiralSpeed" min="0" max="100" value="50">
+          </div>
+          <div class="slider-container">
+            <label for="glowIntensity">Tone Glow Intensity</label>
+            <input type="range" id="glowIntensity" min="0" max="100" value="70">
+          </div>
+        </div>
+        
+        <div class="control-group">
+          <h3><i>🏯</i> Architectural Overlay</h3>
+          <div class="slider-container">
+            <label for="structureOpacity">Structure Opacity</label>
+            <input type="range" id="structureOpacity" min="0" max="100" value="40">
+          </div>
+          <div class="slider-container">
+            <label for="gridVisibility">Grid Visibility</label>
+            <input type="range" id="gridVisibility" min="0" max="100" value="80">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>Harmonic Elevation Module | Sacred Geometry Visualization | Freiburg Minster Proportions | Harmonic Ratios Based on Golden Ratio (1:1.618)</p>
+  </div>
+
+  <script>
+    // Base frequency and segments
+    const BASE_FREQ = 256;
+    const segments = [
+      { tone: "DO",  ratio: 1,     freq: 256,   color: "#ffc107", name: "Freeing Fate", ratioText: "1:1", phrase: "Freeing Fate" },
+      { tone: "RE",  ratio: 5/4,   freq: 320,   color: "#ff7043", name: "Destiny", ratioText: "5:4", phrase: "Destiny" },
+      { tone: "MI",  ratio: 3/2,   freq: 384,   color: "#66bb6a", name: "Knowledge", ratioText: "3:2", phrase: "Knowledge" },
+      { tone: "FA",  ratio: 4/3,   freq: 341.33, color: "#42a5f5", name: "Don't Panic", ratioText: "4:3", phrase: "Don't Panic" },
+      { tone: "SOL", ratio: 5/3,   freq: 426.67, color: "#ab47bc", name: "My Two", ratioText: "5:3", phrase: "My Two" },
+      { tone: "LA",  ratio: 5/2,   freq: 640,    color: "#26c6da", name: "My Exit", ratioText: "5:2", phrase: "My Exit" },
+      { tone: "SI",  ratio: 15/8,  freq: 480,    color: "#ef5350", name: "My Angles", ratioText: "15:8", phrase: "My Angles" },
+      { tone: "DO'", ratio: 2,     freq: 512,    color: "#cddc39", name: "My Loop", ratioText: "2:1", phrase: "My Loop" }
+    ];
+
+    // Canvas setup
+    const elevationCanvas = document.getElementById("elevationCanvas");
+    const spiralCanvas = document.getElementById("spiralCanvas");
+    const elevCtx = elevationCanvas.getContext("2d");
+    const spiralCtx = spiralCanvas.getContext("2d");
+    
+    // Set canvas dimensions
+    function setupCanvases() {
+      elevationCanvas.width = elevationCanvas.clientWidth;
+      elevationCanvas.height = 600;
+      
+      spiralCanvas.width = spiralCanvas.clientWidth;
+      spiralCanvas.height = 500;
+      
+      drawElevation();
+      drawSpiral();
+    }
+    
+    // Draw the elevation chart
+    function drawElevation() {
+      const width = elevationCanvas.width;
+      const height = elevationCanvas.height;
+      
+      // Clear canvas
+      elevCtx.clearRect(0, 0, width, height);
+      
+      // Draw sacred geometry grid
+      drawSacredGrid();
+      
+      // Draw structure overlay
+      drawFreiburgStructure();
+      
+      const totalHeight = height - 100;
+      const baseUnit = totalHeight / segments.reduce((acc, s) => acc + s.ratio, 0);
+      let y = 50;
+      const barWidth = width - 100;
+      
+      segments.forEach((seg, i) => {
+        const h = seg.ratio * baseUnit;
+        
+        // Draw bar
+        elevCtx.fillStyle = seg.color;
+        elevCtx.fillRect(50, y, barWidth, h);
+        
+        // Draw label
+        elevCtx.fillStyle = "#fff";
+        elevCtx.font = "bold 14px 'Segoe UI'";
+        elevCtx.fillText(`${seg.tone} (${seg.ratioText})`, 60, y + 22);
+        
+        elevCtx.font = "13px 'Segoe UI'";
+        elevCtx.fillText(seg.phrase, 60, y + 40);
+        
+        elevCtx.font = "12px 'Segoe UI'";
+        elevCtx.fillText(`${seg.freq.toFixed(2)} Hz`, 60, y + 58);
+        
+        y += h + 10;
+      });
+    }
+    
+    // Draw sacred geometry grid
+    function drawSacredGrid() {
+      const width = elevationCanvas.width;
+      const height = elevationCanvas.height;
+      
+      elevCtx.strokeStyle = "rgba(100, 150, 255, 0.2)";
+      elevCtx.lineWidth = 1;
+      
+      // Vertical lines (golden ratio)
+      const phi = 1.618;
+      for (let i = 0; i < 8; i++) {
+        const x = width * (1 - 1 / Math.pow(phi, i));
+        elevCtx.beginPath();
+        elevCtx.moveTo(x, 0);
+        elevCtx.lineTo(x, height);
+        elevCtx.stroke();
+      }
+      
+      // Horizontal lines
+      for (let i = 0; i <= 10; i++) {
+        const y = height * (i / 10);
+        elevCtx.beginPath();
+        elevCtx.moveTo(0, y);
+        elevCtx.lineTo(width, y);
+        elevCtx.stroke();
+      }
+    }
+    
+    // Draw Freiburg Minster structure overlay
+    function drawFreiburgStructure() {
+      const width = elevationCanvas.width;
+      const height = elevationCanvas.height;
+      
+      elevCtx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      elevCtx.lineWidth = 2;
+      
+      // Main spire
+      elevCtx.beginPath();
+      elevCtx.moveTo(width * 0.5, height * 0.1);
+      elevCtx.lineTo(width * 0.5, height * 0.9);
+      elevCtx.stroke();
+      
+      // Base structure
+      elevCtx.beginPath();
+      elevCtx.moveTo(width * 0.3, height * 0.85);
+      elevCtx.lineTo(width * 0.7, height * 0.85);
+      elevCtx.stroke();
+      
+      // Arches
+      for (let i = 0; i < 5; i++) {
+        const x = width * (0.3 + i * 0.1);
+        elevCtx.beginPath();
+        elevCtx.moveTo(x, height * 0.7);
+        elevCtx.quadraticCurveTo(x + 20, height * 0.65, x + 40, height * 0.7);
+        elevCtx.stroke();
+      }
+      
+      // Windows
+      for (let i = 0; i < 4; i++) {
+        const y = height * (0.3 + i * 0.15);
+        elevCtx.beginPath();
+        elevCtx.rect(width * 0.45, y, 30, 40);
+        elevCtx.stroke();
+      }
+    }
+    
+    // Draw spiral visualization
+    function drawSpiral() {
+      const width = spiralCanvas.width;
+      const height = spiralCanvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      // Clear canvas
+      spiralCtx.clearRect(0, 0, width, height);
+      
+      // Draw harmonic grid
+      spiralCtx.strokeStyle = "rgba(100, 150, 255, 0.15)";
+      spiralCtx.lineWidth = 1;
+      
+      // Radial lines
+      for (let i = 0; i < 8; i++) {
+        const angle = (i * Math.PI) / 4;
+        spiralCtx.beginPath();
+        spiralCtx.moveTo(centerX, centerY);
+        spiralCtx.lineTo(
+          centerX + Math.cos(angle) * 300,
+          centerY + Math.sin(angle) * 300
+        );
+        spiralCtx.stroke();
+      }
+      
+      // Circles
+      for (let i = 1; i <= 4; i++) {
+        spiralCtx.beginPath();
+        spiralCtx.arc(centerX, centerY, 60 * i, 0, Math.PI * 2);
+        spiralCtx.stroke();
+      }
+      
+      // Draw golden spiral
+      spiralCtx.beginPath();
+      spiralCtx.strokeStyle = "#5e9fff";
+      spiralCtx.lineWidth = 3;
+      
+      const a = 0.5;  // Start radius
+      const b = 0.15; // Growth factor
+      
+      for (let angle = 0; angle < 8 * Math.PI; angle += 0.05) {
+        const radius = a * Math.exp(b * angle);
+        const x = centerX + radius * Math.cos(angle) * 100;
+        const y = centerY + radius * Math.sin(angle) * 100;
+        
+        if (angle === 0) {
+          spiralCtx.moveTo(x, y);
+        } else {
+          spiralCtx.lineTo(x, y);
+        }
+      }
+      spiralCtx.stroke();
+      
+      // Draw tone petals
+      segments.forEach((seg, i) => {
+        const angle = i * (Math.PI / 4);
+        const radius = 60 + i * 20;
+        const petalX = centerX + radius * Math.cos(angle);
+        const petalY = centerY + radius * Math.sin(angle);
+        
+        // Draw petal
+        spiralCtx.beginPath();
+        spiralCtx.ellipse(petalX, petalY, 30, 15, angle, 0, Math.PI * 2);
+        spiralCtx.fillStyle = seg.color + "aa";
+        spiralCtx.fill();
+        
+        // Draw tone label
+        spiralCtx.fillStyle = "#fff";
+        spiralCtx.font = "bold 16px 'Segoe UI'";
+        spiralCtx.textAlign = "center";
+        spiralCtx.textBaseline = "middle";
+        spiralCtx.fillText(seg.tone, petalX, petalY);
+      });
+    }
+    
+    // Play tone function with visualization
+    function playTone(index) {
+      const seg = segments[index];
+      const freq = seg.freq;
+      
+      // Visual feedback on elevation
+      highlightSegment(index);
+      
+      // Animate spiral
+      animateSpiral(seg);
+      
+      // Create audio context if needed
+      if (!window.audioContext) {
+        window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      // Create oscillator
+      const oscillator = window.audioContext.createOscillator();
+      const gainNode = window.audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, window.audioContext.currentTime);
+      
+      // Configure volume envelope
+      gainNode.gain.setValueAtTime(0, window.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.7, window.audioContext.currentTime + 0.02);
+      gainNode.gain.linearRampToValueAtTime(0.7, window.audioContext.currentTime + 0.5);
+      gainNode.gain.linearRampToValueAtTime(0, window.audioContext.currentTime + 1.0);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(window.audioContext.destination);
+      
+      oscillator.start();
+      oscillator.stop(window.audioContext.currentTime + 1.0);
+    }
+    
+    // Highlight segment in elevation chart
+    function highlightSegment(index) {
+      // Remove any existing highlights
+      segments.forEach((seg, i) => {
+        seg.isActive = false;
+      });
+      
+      // Set current segment as active
+      segments[index].isActive = true;
+      
+      // Redraw to show highlight
+      drawElevation();
+    }
+    
+    // Animate spiral for active tone
+    function animateSpiral(segment) {
+      const width = spiralCanvas.width;
+      const height = spiralCanvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      // Clear canvas
+      spiralCtx.clearRect(0, 0, width, height);
+      
+      // Draw base spiral
+      drawSpiral();
+      
+      // Draw active tone effect
+      const petalIndex = segments.indexOf(segment);
+      const angle = petalIndex * (Math.PI / 4);
+      const radius = 60 + petalIndex * 20;
+      const petalX = centerX + radius * Math.cos(angle);
+      const petalY = centerY + radius * Math.sin(angle);
+      
+      // Draw glowing effect
+      spiralCtx.beginPath();
+      spiralCtx.arc(petalX, petalY, 50, 0, Math.PI * 2);
+      const gradient = spiralCtx.createRadialGradient(
+        petalX, petalY, 0,
+        petalX, petalY, 50
+      );
+      gradient.addColorStop(0, segment.color + "ff");
+      gradient.addColorStop(1, segment.color + "00");
+      spiralCtx.fillStyle = gradient;
+      spiralCtx.fill();
+      
+      // Draw tone connection to center
+      spiralCtx.beginPath();
+      spiralCtx.moveTo(centerX, centerY);
+      spiralCtx.lineTo(petalX, petalY);
+      spiralCtx.strokeStyle = segment.color;
+      spiralCtx.lineWidth = 2;
+      spiralCtx.stroke();
+    }
+    
+    // Setup event listeners
+    elevationCanvas.addEventListener("click", e => {
+      const rect = elevationCanvas.getBoundingClientRect();
+      const y = e.clientY - rect.top;
+      
+      const totalHeight = elevationCanvas.height - 100;
+      const baseUnit = totalHeight / segments.reduce((acc, s) => acc + s.ratio, 0);
+      let currentY = 50;
+      
+      for (let i = 0; i < segments.length; i++) {
+        const h = segments[i].ratio * baseUnit;
+        if (y >= currentY && y <= currentY + h) {
+          playTone(i);
+          break;
+        }
+        currentY += h + 10;
+      }
+    });
+    
+    // Initialize
+    window.addEventListener('load', () => {
+      setupCanvases();
+      window.addEventListener('resize', setupCanvases);
+    });
+  </script>
+</body>
+</html>
